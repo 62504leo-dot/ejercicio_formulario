@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif; /* Fuente Premium */
+    font-family: 'Montserrat', sans-serif;
 }
 
 body {
@@ -14,22 +14,68 @@ body {
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
+    position: relative; /* Necesario para el fondo animado */
+    overflow-x: hidden; /* Evita scroll horizontal por la animación */
+}
+
+/* --- NUEVO: ANIMACIÓN DE FONDO (Tech Falling) --- */
+#fondo-animado {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Detrás de todo */
+    pointer-events: none; /* Para que no interfiera con los clics */
+}
+
+/* Estilo de cada "partícula" de datos */
+.particula {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(100, 255, 218, 0.3); /* Color cian tecnológico transparente */
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+    border-radius: 50%; /* Redondas, puedes quitarlos para cuadradas */
+    animation: caer linear infinite;
+}
+
+@keyframes caer {
+    0% {
+        transform: translateY(-10vh) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        transform: translateY(110vh) scale(0.5);
+        opacity: 0;
+    }
 }
 
 /* --- TARJETA PRINCIPAL --- */
+.contenedor-principal {
+    position: relative;
+    z-index: 10; /* Para que esté POR ENCIMA de la animación */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .tarjeta-premium {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.98); /* Ligeramente transparente para ver el fondo */
     width: 100%;
     max-width: 550px;
     border-radius: 20px;
     padding: 50px;
-    /* Sombra profunda para efecto 3D */
     box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(5px); /* Efecto de cristal */
 }
 
-/* Decoración superior (barra de color) */
 .tarjeta-premium::before {
     content: "";
     position: absolute;
@@ -37,26 +83,12 @@ body {
     left: 0;
     width: 100%;
     height: 8px;
-    background: linear-gradient(to right, #ff9966, #ff5e62); /* Naranja a Rosa */
+    background: linear-gradient(to right, #ff9966, #ff5e62);
 }
 
-header {
-    text-align: center;
-    margin-bottom: 35px;
-}
-
-header h2 {
-    color: #1a1a1a;
-    font-weight: 700;
-    font-size: 1.8rem;
-    letter-spacing: -0.5px;
-}
-
-header p {
-    color: #666;
-    font-size: 0.95rem;
-    margin-top: 5px;
-}
+header { text-align: center; margin-bottom: 35px; }
+header h2 { color: #1a1a1a; font-weight: 700; font-size: 1.8rem; }
+header p { color: #666; font-size: 0.95rem; margin-top: 5px; }
 
 .linea-decorativa {
     width: 50px;
@@ -66,18 +98,10 @@ header p {
     border-radius: 2px;
 }
 
-/* --- INPUTS Y LABELS --- */
-.grupo-input {
-    margin-bottom: 22px;
-}
-
-.fila-doble {
-    display: flex;
-    gap: 20px;
-}
-.fila-doble .grupo-input {
-    flex: 1;
-}
+/* --- INPUTS --- */
+.grupo-input { margin-bottom: 22px; }
+.fila-doble { display: flex; gap: 20px; }
+.fila-doble .grupo-input { flex: 1; }
 
 label {
     display: block;
@@ -85,17 +109,12 @@ label {
     font-weight: 600;
     font-size: 0.85rem;
     color: #444;
-    text-transform: uppercase; /* Texto en mayúsculas pequeño */
+    text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-/* Estilo de las cajas de texto */
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="date"],
-select,
-textarea {
+input[type="text"], input[type="email"], input[type="tel"],
+input[type="date"], select, textarea {
     width: 100%;
     padding: 14px 16px;
     border: 2px solid #e1e1e1;
@@ -106,141 +125,56 @@ textarea {
     color: #333;
 }
 
-/* Efecto al hacer clic en el input */
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: #ff9966; /* Borde naranja suave */
+    border-color: #ff9966;
     background-color: #fff;
     box-shadow: 0 5px 15px rgba(255, 153, 102, 0.15);
 }
 
-/* --- RADIO Y CHECKBOXES (Estilo Botón) --- */
-.contenedor-opciones, .contenedor-checks {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
+.contenedor-opciones, .contenedor-checks { display: flex; gap: 15px; flex-wrap: wrap; }
+.contenedor-checks { flex-direction: column; gap: 10px; }
 
-.contenedor-checks {
-    flex-direction: column;
-    gap: 10px;
-}
+.opcion-radio, .opcion-check { cursor: pointer; display: flex; align-items: center; }
+.opcion-radio input, .opcion-check input { margin-right: 10px; accent-color: #ff5e62; width: 18px; height: 18px; }
+.vip { color: #ff5e62; font-weight: 700; }
 
-.opcion-radio, .opcion-check {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
-.opcion-radio input, .opcion-check input {
-    margin-right: 10px;
-    accent-color: #ff5e62; /* Color del puntito al seleccionar */
-    width: 18px;
-    height: 18px;
-}
-
-.vip {
-    color: #ff5e62;
-    font-weight: 700;
-}
-
-/* --- INPUT ARCHIVO --- */
 .input-archivo-wrapper {
-    position: relative;
-    border: 2px dashed #ccc;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    background: #fafafa;
-    transition: 0.3s;
+    position: relative; border: 2px dashed #ccc; padding: 15px;
+    border-radius: 10px; text-align: center; background: #fafafa; transition: 0.3s;
 }
-.input-archivo-wrapper:hover {
-    border-color: #ff9966;
-    background: #fff5f0;
-}
+.input-archivo-wrapper:hover { border-color: #ff9966; background: #fff5f0; }
 
-/* --- BOTÓN DE ENVIAR (Llamativo) --- */
 .btn-gradiente {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 10px;
-    /* Degradado Naranja Vibrante */
-    background: linear-gradient(to right, #ff9966, #ff5e62);
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-top: 10px;
+    width: 100%; padding: 16px; border: none; border-radius: 10px;
+    background: linear-gradient(to right, #ff9966, #ff5e62); color: white;
+    font-size: 1.1rem; font-weight: 700; cursor: pointer; text-transform: uppercase;
+    letter-spacing: 1px; transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px;
 }
+.btn-gradiente:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 94, 98, 0.4); }
 
-.btn-gradiente:hover {
-    transform: translateY(-3px); /* Se mueve un poco hacia arriba */
-    box-shadow: 0 10px 20px rgba(255, 94, 98, 0.4);
-}
+.error-msg { color: #e74c3c; font-size: 0.75rem; font-weight: 600; margin-top: 5px; display: block; min-height: 15px; }
+.exito-texto { color: #27ae60; text-align: center; margin-top: 20px; font-weight: 700; font-size: 1.1rem; }
 
-.btn-gradiente:active {
-    transform: translateY(1px);
-}
+@media (max-width: 600px) { .fila-doble { flex-direction: column; gap: 0; } .tarjeta-premium { padding: 30px; } }
 
-/* --- MENSAJES DE ERROR --- */
-.error-msg {
-    color: #e74c3c;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-top: 5px;
-    display: block;
-    min-height: 15px;
-}
+/* --- ESTILOS DE VALIDACIÓN (ROJO Y VERDE) --- */
 
+/* ERROR (Rojo y sacudida) */
 .input-error {
     border-color: #e74c3c !important;
     background-color: #fdf2f2 !important;
     animation: shake 0.3s ease-in-out;
 }
 
-.exito-texto {
-    color: #27ae60;
-    text-align: center;
-    margin-top: 20px;
-    font-weight: 700;
-    font-size: 1.1rem;
-}
-
-/* Animación de sacudida para errores */
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-    .fila-doble {
-        flex-direction: column;
-        gap: 0;
-    }
-    .tarjeta-premium {
-        padding: 30px;
-    }
-}
-
-/* --- AGREGAR ESTO AL FINAL DE TU CSS --- */
-
-/* Clase para cuando el campo es CORRECTO (Verde) */
+/* ÉXITO (Verde Brillante) */
 .input-exito {
-    border-color: #2ecc71 !important; /* Verde Esmeralda */
-    background-color: #e8f8f5 !important; /* Fondo verde muy suave */
-    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2); /* Brillo verde */
-    transition: all 0.3s ease;
+    border-color: #2ecc71 !important;
+    background-color: #e8f8f5 !important;
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2) !important;
 }
 
-/* Opcional: Poner el texto del label en verde también */
-.label-exito {
-    color: #2ecc71 !important;
+@keyframes shake {
+    0% { transform: translateX(0); } 25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); }
 }

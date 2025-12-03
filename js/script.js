@@ -1,6 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. CARGA DE PAÍSES ---
+    // --- NUEVO: 1. CREAR FONDO ANIMADO (Partículas Tech) ---
+    function crearFondoAnimado() {
+        const contenedor = document.getElementById('fondo-animado');
+        const cantidadParticulas = 50; // Ajusta la cantidad si quieres más o menos
+
+        for (let i = 0; i < cantidadParticulas; i++) {
+            const particula = document.createElement('div');
+            particula.classList.add('particula');
+            
+            // Posición horizontal aleatoria (0 a 100vw)
+            particula.style.left = Math.random() * 100 + 'vw';
+            // Tamaño aleatorio (un poco de variación)
+            const tamano = Math.random() * 5 + 2; // entre 2px y 7px
+            particula.style.width = tamano + 'px';
+            particula.style.height = tamano + 'px';
+            // Duración de caída aleatoria (entre 5s y 15s)
+            const duracion = Math.random() * 10 + 5;
+            particula.style.animationDuration = duracion + 's';
+            // Retraso inicial aleatorio para que no caigan todas juntas
+            particula.style.animationDelay = Math.random() * 5 + 's';
+            // Opacidad aleatoria
+            particula.style.opacity = Math.random() * 0.5 + 0.2;
+
+            contenedor.appendChild(particula);
+        }
+    }
+    // Ejecutar la animación
+    crearFondoAnimado();
+
+
+    // --- 2. CARGA DE PAÍSES ---
     const paises = ['México', 'Colombia', 'Argentina', 'Chile', 'Perú', 'España', 'Estados Unidos'];
     const selectPais = document.getElementById('pais');
     
@@ -12,120 +42,80 @@ document.addEventListener('DOMContentLoaded', () => {
         selectPais.appendChild(opcion);
     });
 
-    // --- 2. REFERENCIAS A LOS ELEMENTOS ---
+    // --- 3. LÓGICA DE VALIDACIÓN EN TIEMPO REAL (ROJO/VERDE) ---
     const formulario = document.getElementById('formulario');
-    const nombre = document.getElementById('nombre');
-    const email = document.getElementById('email');
-    const telefono = document.getElementById('telefono');
-    const archivo = document.getElementById('archivo');
+    const inputs = {
+        nombre: document.getElementById('nombre'),
+        email: document.getElementById('email'),
+        telefono: document.getElementById('telefono'),
+        archivo: document.getElementById('archivo')
+    };
     const msgExito = document.getElementById('mensaje-exito');
 
-    // --- 3. FUNCIONES DE VALIDACIÓN INDIVIDUAL (Para usar en tiempo real) ---
-    
-    // Función que pinta Verde (Éxito) o Rojo (Error)
-    const validarCampo = (input, idError, esValido, msgError) => {
-        const spanError = document.getElementById(idError);
-        
-        if (esValido) {
-            // SI ES CORRECTO: Quita rojo, pone verde, borra mensaje
-            input.classList.remove('input-error');
-            input.classList.add('input-exito');
-            spanError.textContent = '';
+    // Función para pintar Rojo o Verde
+    const validarCampo = (input, condicion, msgError, idError) => {
+        const span = document.getElementById(idError);
+        const elementoVisual = input.type === 'file' ? input.parentElement : input;
+
+        if (condicion) {
+            // VERDE (Correcto)
+            elementoVisual.classList.remove('input-error');
+            elementoVisual.classList.add('input-exito');
+            span.textContent = ''; 
             return true;
         } else {
-            // SI ES INCORRECTO: Quita verde, pone rojo, muestra mensaje
-            input.classList.remove('input-exito');
-            input.classList.add('input-error');
-            spanError.textContent = msgError;
+            // ROJO (Incorrecto)
+            elementoVisual.classList.remove('input-exito');
+            elementoVisual.classList.add('input-error');
+            span.textContent = msgError;
             return false;
         }
     };
 
-    // Validar Nombre
-    const checkNombre = () => {
-        const valido = nombre.value.trim() !== '';
-        return validarCampo(nombre, 'error-nombre', valido, '⚠️ El nombre es obligatorio');
-    };
-
-    // Validar Email
+    // Validaciones individuales
+    const checkNombre = () => validarCampo(inputs.nombre, inputs.nombre.value.trim() !== '', '⚠️ El nombre es obligatorio', 'error-nombre');
     const checkEmail = () => {
         const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const valido = regexEmail.test(email.value);
-        return validarCampo(email, 'error-email', valido, '⚠️ Correo inválido');
+        return validarCampo(inputs.email, regexEmail.test(inputs.email.value), '⚠️ Correo inválido (falta @ o .)', 'error-email');
     };
-
-    // Validar Teléfono
     const checkTelefono = () => {
         const regexTel = /^[0-9]{10}$/;
-        const valido = regexTel.test(telefono.value);
-        return validarCampo(telefono, 'error-telefono', valido, '⚠️ Deben ser 10 dígitos');
+        return validarCampo(inputs.telefono, regexTel.test(inputs.telefono.value), '⚠️ Debe tener 10 dígitos exactos', 'error-telefono');
     };
-
-    // Validar Archivo
     const checkArchivo = () => {
-        // Validamos si hay archivo y el tipo
         let valido = false;
-        let msg = '';
-
-        if (archivo.files.length === 0) {
-            msg = '⚠️ Sube tu identificación';
-        } else {
-            const tipo = archivo.files[0].type;
-            if (tipo !== 'application/pdf' && !tipo.startsWith('image/')) {
-                msg = '⚠️ Solo PDF o Imágenes';
-            } else {
-                valido = true;
-            }
+        if (inputs.archivo.files.length > 0) {
+            const tipo = inputs.archivo.files[0].type;
+            if (tipo === 'application/pdf' || tipo.startsWith('image/')) valido = true;
         }
-        // Nota: para el archivo pasamos el parentElement para pintar el borde del contenedor
-        const contenedorArchivo = archivo.parentElement; 
-        
-        const spanError = document.getElementById('error-archivo');
-        if(valido) {
-            contenedorArchivo.classList.remove('input-error');
-            contenedorArchivo.classList.add('input-exito');
-            spanError.textContent = '';
-        } else {
-            contenedorArchivo.classList.remove('input-exito');
-            contenedorArchivo.classList.add('input-error');
-            spanError.textContent = msg;
-        }
-        return valido;
+        return validarCampo(inputs.archivo, valido, '⚠️ Sube PDF o Imagen', 'error-archivo');
     };
 
-    // --- 4. EVENTOS EN TIEMPO REAL (LO QUE PEDISTE) ---
-    // Esto hace que se ponga verde o rojo MIENTRAS escribes
-    nombre.addEventListener('input', checkNombre);
-    email.addEventListener('input', checkEmail);
-    telefono.addEventListener('input', checkTelefono);
-    archivo.addEventListener('change', checkArchivo); // Archivos usan 'change'
+    // Eventos "tiempo real"
+    inputs.nombre.addEventListener('input', checkNombre);
+    inputs.email.addEventListener('input', checkEmail);
+    inputs.telefono.addEventListener('input', checkTelefono);
+    inputs.archivo.addEventListener('change', checkArchivo);
 
-    // --- 5. EVENTO SUBMIT (VALIDACIÓN FINAL) ---
+    // Evento Enviar (Botón)
     formulario.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        // Ejecutamos todas las validaciones
         const nombreOk = checkNombre();
         const emailOk = checkEmail();
         const telOk = checkTelefono();
-        const fileOk = checkArchivo();
+        const archivoOk = checkArchivo();
 
-        // Si TODAS son true (verdaderas)
-        if (nombreOk && emailOk && telOk && fileOk) {
-            msgExito.textContent = "¡EXITOSO! Todos los datos son correctos. 🎉";
-            msgExito.style.color = "#2ecc71"; // Texto verde
-            
-            // Simular envío
-            console.log("Enviando...");
+        if (nombreOk && emailOk && telOk && archivoOk) {
+            msgExito.textContent = "¡REGISTRO EXITOSO! Bienvenido a la era de la IA. 🎉";
+            msgExito.style.color = "#2ecc71";
             setTimeout(() => {
                 formulario.reset();
-                // Quitar clases verdes de todos los inputs
                 document.querySelectorAll('.input-exito').forEach(el => el.classList.remove('input-exito'));
                 msgExito.textContent = "";
             }, 4000);
         } else {
-            msgExito.textContent = "Por favor corrige los campos en rojo.";
-            msgExito.style.color = "#e74c3c"; // Texto rojo
+            msgExito.textContent = "Por favor corrige los campos marcados.";
+            msgExito.style.color = "#e74c3c";
         }
     });
 });
