@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Tech Exclusivo</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,7 +20,6 @@
             </header>
 
             <form id="formulario" novalidate>
-                
                 <div class="grupo-input">
                     <label for="nombre">Nombre Completo</label>
                     <input type="text" id="nombre" placeholder="Ej. Roberto Martínez">
@@ -72,15 +70,15 @@
                     <div class="contenedor-checks">
                         <label class="opcion-check">
                             <input type="checkbox" name="talleres" value="ai">
-                            <span>Inteligencia Artificial y ML</span>
+                            <span>IA y Machine Learning</span>
                         </label>
                         <label class="opcion-check">
                             <input type="checkbox" name="talleres" value="data">
-                            <span>Data Science & Big Data</span>
+                            <span>Data Science</span>
                         </label>
                         <label class="opcion-check">
                             <input type="checkbox" name="talleres" value="cyber">
-                            <span>Ciberseguridad Avanzada</span>
+                            <span>Ciberseguridad</span>
                         </label>
                     </div>
                 </div>
@@ -95,13 +93,20 @@
 
                 <div class="grupo-input">
                     <label for="comentarios">Comentarios Adicionales</label>
-                    <textarea id="comentarios" rows="3" placeholder="¿Tienes algún requerimiento especial?"></textarea>
+                    <textarea id="comentarios" rows="3"></textarea>
                 </div>
 
                 <button type="submit" class="btn-gradiente">CONFIRMAR REGISTRO</button>
-                <p id="mensaje-exito" class="exito-texto"></p>
-
             </form>
+        </div>
+    </div>
+
+    <div id="modal-exito" class="modal-overlay">
+        <div class="modal-content">
+            <div class="icono-check">✓</div>
+            <h3>¡Registro Exitoso!</h3>
+            <p>Tus datos han sido enviados correctamente. Bienvenido al evento.</p>
+            <button id="btn-cerrar-modal">ACEPTAR</button>
         </div>
     </div>
 
