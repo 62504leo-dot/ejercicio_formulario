@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Exclusivo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        <div class="tarjeta-premium">
+            <header>
+                <h2>Registro al Evento</h2>
+                <p>Reserva tu lugar en nuestra experiencia exclusiva.</p>
+                <div class="linea-decorativa"></div>
+            </header>
+
+            <form id="formulario" novalidate>
+                
+                <div class="grupo-input">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" id="nombre" placeholder="Ej. Roberto Martínez">
+                    <span class="error-msg" id="error-nombre"></span>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" placeholder="contacto@empresa.com">
+                    <span class="error-msg" id="error-email"></span>
+                </div>
+
+                <div class="fila-doble">
+                    <div class="grupo-input">
+                        <label for="telefono">Teléfono (10 dígitos)</label>
+                        <input type="tel" id="telefono" placeholder="5512345678">
+                        <span class="error-msg" id="error-telefono"></span>
+                    </div>
+                    <div class="grupo-input">
+                        <label for="fecha">Fecha de Nacimiento</label>
+                        <input type="date" id="fecha">
+                    </div>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="pais">País de Residencia</label>
+                    <select id="pais">
+                        <option value="">Cargando lista...</option>
+                    </select>
+                </div>
+
+                <div class="grupo-input">
+                    <label class="label-titulo">Selecciona tu Acceso</label>
+                    <div class="contenedor-opciones">
+                        <label class="opcion-radio">
+                            <input type="radio" name="entrada" value="general">
+                            <span class="radio-texto">General</span>
+                        </label>
+                        <label class="opcion-radio">
+                            <input type="radio" name="entrada" value="vip">
+                            <span class="radio-texto vip">VIP Experience</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grupo-input">
+                    <label class="label-titulo">Talleres Disponibles</label>
+                    <div class="contenedor-checks">
+                        <label class="opcion-check">
+                            <input type="checkbox" name="talleres" value="programacion">
+                            <span>Desarrollo Web</span>
+                        </label>
+                        <label class="opcion-check">
+                            <input type="checkbox" name="talleres" value="ux">
+                            <span>Diseño UX/UI</span>
+                        </label>
+                        <label class="opcion-check">
+                            <input type="checkbox" name="talleres" value="marketing">
+                            <span>Marketing Digital</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="archivo">Identificación Oficial (PDF/Imagen)</label>
+                    <div class="input-archivo-wrapper">
+                        <input type="file" id="archivo" accept=".pdf,image/*">
+                    </div>
+                    <span class="error-msg" id="error-archivo"></span>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="comentarios">Comentarios Adicionales</label>
+                    <textarea id="comentarios" rows="3" placeholder="¿Tienes algún requerimiento especial?"></textarea>
+                </div>
+
+                <button type="submit" class="btn-gradiente">CONFIRMAR REGISTRO</button>
+                <p id="mensaje-exito" class="exito-texto"></p>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
