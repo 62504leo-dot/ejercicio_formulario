@@ -229,3 +229,18 @@ input:focus, select:focus, textarea:focus {
         padding: 30px;
     }
 }
+
+/* --- AGREGAR ESTO AL FINAL DE TU CSS --- */
+
+/* Clase para cuando el campo es CORRECTO (Verde) */
+.input-exito {
+    border-color: #2ecc71 !important; /* Verde Esmeralda */
+    background-color: #e8f8f5 !important; /* Fondo verde muy suave */
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2); /* Brillo verde */
+    transition: all 0.3s ease;
+}
+
+/* Opcional: Poner el texto del label en verde también */
+.label-exito {
+    color: #2ecc71 !important;
+}

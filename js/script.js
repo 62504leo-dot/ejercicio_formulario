@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. REQUISITO: SELECT DINÁMICO ---
-    // (Llena el país desde este array, no desde el HTML)
+    // --- 1. CARGA DE PAÍSES ---
     const paises = ['México', 'Colombia', 'Argentina', 'Chile', 'Perú', 'España', 'Estados Unidos'];
     const selectPais = document.getElementById('pais');
     
@@ -13,92 +12,120 @@ document.addEventListener('DOMContentLoaded', () => {
         selectPais.appendChild(opcion);
     });
 
-    // --- 2. REQUISITO: VALIDACIONES AL DAR CLICK ---
+    // --- 2. REFERENCIAS A LOS ELEMENTOS ---
     const formulario = document.getElementById('formulario');
+    const nombre = document.getElementById('nombre');
+    const email = document.getElementById('email');
+    const telefono = document.getElementById('telefono');
+    const archivo = document.getElementById('archivo');
+    const msgExito = document.getElementById('mensaje-exito');
 
-    formulario.addEventListener('submit', (e) => {
-        // AQUI ESTÁ LA CLAVE: Evitamos que se envíe si hay errores
-        e.preventDefault(); 
+    // --- 3. FUNCIONES DE VALIDACIÓN INDIVIDUAL (Para usar en tiempo real) ---
+    
+    // Función que pinta Verde (Éxito) o Rojo (Error)
+    const validarCampo = (input, idError, esValido, msgError) => {
+        const spanError = document.getElementById(idError);
         
-        // Limpiamos errores viejos para volver a validar
-        limpiarErrores();
-        
-        let esValido = true; // Asumimos que todo está bien hasta que encontremos un error
-
-        // --- VALIDACIÓN 1: NOMBRE OBLIGATORIO ---
-        const nombre = document.getElementById('nombre');
-        if(nombre.value.trim() === '') {
-            // Aquí mandamos el "Mensaje Personalizado" que pide la imagen
-            mostrarError('error-nombre', '⚠️ El nombre es obligatorio', nombre);
-            esValido = false;
-        }
-
-        // --- VALIDACIÓN 2: EMAIL VÁLIDO ---
-        const email = document.getElementById('email');
-        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Fórmula mágica para emails
-        if(!regexEmail.test(email.value)) {
-            mostrarError('error-email', '⚠️ Ingresa un correo válido (ej: hola@sitio.com)', email);
-            esValido = false;
-        }
-
-        // --- VALIDACIÓN 3: TELÉFONO 10 DÍGITOS ---
-        const telefono = document.getElementById('telefono');
-        const regexTel = /^[0-9]{10}$/; // Solo acepta 10 números exactos
-        if(!regexTel.test(telefono.value)) {
-            mostrarError('error-telefono', '⚠️ El teléfono debe tener 10 números exactos', telefono);
-            esValido = false;
-        }
-
-        // --- VALIDACIÓN 4: ARCHIVO (OBLIGATORIO Y TIPO) ---
-        const archivo = document.getElementById('archivo');
-        if(archivo.files.length === 0) {
-            // Si no subió nada
-            mostrarError('error-archivo', '⚠️ Debes subir tu identificación', archivo.parentElement);
-            esValido = false;
+        if (esValido) {
+            // SI ES CORRECTO: Quita rojo, pone verde, borra mensaje
+            input.classList.remove('input-error');
+            input.classList.add('input-exito');
+            spanError.textContent = '';
+            return true;
         } else {
-            // Si subió algo, revisamos que sea PDF o Imagen
+            // SI ES INCORRECTO: Quita verde, pone rojo, muestra mensaje
+            input.classList.remove('input-exito');
+            input.classList.add('input-error');
+            spanError.textContent = msgError;
+            return false;
+        }
+    };
+
+    // Validar Nombre
+    const checkNombre = () => {
+        const valido = nombre.value.trim() !== '';
+        return validarCampo(nombre, 'error-nombre', valido, '⚠️ El nombre es obligatorio');
+    };
+
+    // Validar Email
+    const checkEmail = () => {
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const valido = regexEmail.test(email.value);
+        return validarCampo(email, 'error-email', valido, '⚠️ Correo inválido');
+    };
+
+    // Validar Teléfono
+    const checkTelefono = () => {
+        const regexTel = /^[0-9]{10}$/;
+        const valido = regexTel.test(telefono.value);
+        return validarCampo(telefono, 'error-telefono', valido, '⚠️ Deben ser 10 dígitos');
+    };
+
+    // Validar Archivo
+    const checkArchivo = () => {
+        // Validamos si hay archivo y el tipo
+        let valido = false;
+        let msg = '';
+
+        if (archivo.files.length === 0) {
+            msg = '⚠️ Sube tu identificación';
+        } else {
             const tipo = archivo.files[0].type;
-            if(tipo !== 'application/pdf' && !tipo.startsWith('image/')) {
-                mostrarError('error-archivo', '⚠️ Formato inválido. Solo aceptamos PDF o Imágenes', archivo.parentElement);
-                esValido = false;
+            if (tipo !== 'application/pdf' && !tipo.startsWith('image/')) {
+                msg = '⚠️ Solo PDF o Imágenes';
+            } else {
+                valido = true;
             }
         }
+        // Nota: para el archivo pasamos el parentElement para pintar el borde del contenedor
+        const contenedorArchivo = archivo.parentElement; 
+        
+        const spanError = document.getElementById('error-archivo');
+        if(valido) {
+            contenedorArchivo.classList.remove('input-error');
+            contenedorArchivo.classList.add('input-exito');
+            spanError.textContent = '';
+        } else {
+            contenedorArchivo.classList.remove('input-exito');
+            contenedorArchivo.classList.add('input-error');
+            spanError.textContent = msg;
+        }
+        return valido;
+    };
 
-        // --- SI TODO ESTÁ BIEN (esValido sigue siendo true) ---
-        if(esValido) {
-            const mensajeExito = document.getElementById('mensaje-exito');
-            mensajeExito.textContent = "¡Registro enviado correctamente! ✅";
-            console.log("Formulario válido, enviando...");
+    // --- 4. EVENTOS EN TIEMPO REAL (LO QUE PEDISTE) ---
+    // Esto hace que se ponga verde o rojo MIENTRAS escribes
+    nombre.addEventListener('input', checkNombre);
+    email.addEventListener('input', checkEmail);
+    telefono.addEventListener('input', checkTelefono);
+    archivo.addEventListener('change', checkArchivo); // Archivos usan 'change'
+
+    // --- 5. EVENTO SUBMIT (VALIDACIÓN FINAL) ---
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Ejecutamos todas las validaciones
+        const nombreOk = checkNombre();
+        const emailOk = checkEmail();
+        const telOk = checkTelefono();
+        const fileOk = checkArchivo();
+
+        // Si TODAS son true (verdaderas)
+        if (nombreOk && emailOk && telOk && fileOk) {
+            msgExito.textContent = "¡EXITOSO! Todos los datos son correctos. 🎉";
+            msgExito.style.color = "#2ecc71"; // Texto verde
             
-            // Opcional: Borrar el formulario después de 3 segundos
+            // Simular envío
+            console.log("Enviando...");
             setTimeout(() => {
-                mensajeExito.textContent = "";
                 formulario.reset();
-            }, 3000);
+                // Quitar clases verdes de todos los inputs
+                document.querySelectorAll('.input-exito').forEach(el => el.classList.remove('input-exito'));
+                msgExito.textContent = "";
+            }, 4000);
+        } else {
+            msgExito.textContent = "Por favor corrige los campos en rojo.";
+            msgExito.style.color = "#e74c3c"; // Texto rojo
         }
     });
-
-    // --- FUNCIONES QUE PINTAN EL ERROR EN LA PANTALLA ---
-    function mostrarError(idElementoTexto, textoError, elementoInput) {
-        // 1. Busca el <span> pequeñito debajo del input
-        const elementoError = document.getElementById(idElementoTexto);
-        // 2. Le pone el texto del error
-        elementoError.textContent = textoError;
-        // 3. Pinta el borde del input de color rojo
-        if(elementoInput) {
-            elementoInput.classList.add('input-error');
-        }
-    }
-
-    function limpiarErrores() {
-        // Borra todos los textos de error
-        const msgs = document.querySelectorAll('.error-msg');
-        msgs.forEach(m => m.textContent = '');
-        
-        // Quita los bordes rojos
-        const inputsErr = document.querySelectorAll('.input-error');
-        inputsErr.forEach(i => i.classList.remove('input-error'));
-
-        document.getElementById('mensaje-exito').textContent = '';
-    }
 });
