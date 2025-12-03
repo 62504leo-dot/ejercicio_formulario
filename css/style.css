@@ -1,4 +1,4 @@
-/* --- TODO EL CÓDIGO ANTERIOR SE MANTIENE --- */
+/* --- RESET Y FUENTES --- */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
 body { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 40px 20px; position: relative; overflow-x: hidden; }
 
@@ -44,28 +44,32 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #ff9966
 .input-exito { border-color: #2ecc71 !important; background-color: #e8f8f5 !important; box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2) !important; }
 @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
 
-/* --- NUEVO: ESTILOS DE LA VENTANA MODAL (POP-UP) --- */
+/* --- ESTILOS DE LA VENTANA MODAL (POP-UP) --- */
+/* ESTO ES LO QUE TE FALTABA PARA QUE SE VEA BIEN */
+
 .modal-overlay {
-    position: fixed;
+    position: fixed; /* Fijo en la pantalla */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Fondo negro transparente */
-    z-index: 1000; /* Encima de todo */
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro transparente */
+    z-index: 2000; /* Encima de todo */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
+    justify-content: center; /* Centrado horizontal */
+    align-items: center; /* Centrado vertical */
+    opacity: 0; /* Invisible al principio */
+    pointer-events: none; /* No se puede tocar si está invisible */
     transition: opacity 0.3s ease;
 }
 
+/* Cuando JS le agrega la clase 'activo', se vuelve visible */
 .modal-overlay.activo {
     opacity: 1;
     pointer-events: auto;
 }
 
+/* La cajita blanca */
 .modal-content {
     background: white;
     padding: 40px;
@@ -73,27 +77,28 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #ff9966
     text-align: center;
     max-width: 400px;
     width: 90%;
-    transform: translateY(20px);
+    transform: scale(0.8); /* Empieza chiquito */
     transition: transform 0.3s ease;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    border: 4px solid #fff;
 }
 
+/* Animación de entrada de la cajita */
 .modal-overlay.activo .modal-content {
-    transform: translateY(0);
+    transform: scale(1); /* Crece a tamaño normal */
 }
 
 .icono-check {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    width: 70px;
+    height: 70px;
+    background: #2ecc71;
     color: white;
     border-radius: 50%;
-    font-size: 40px;
+    font-size: 35px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto 20px;
-    box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
 }
 
 .modal-content h3 {
@@ -103,7 +108,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #ff9966
 }
 
 .modal-content p {
-    color: #666;
+    color: #555;
     margin-bottom: 25px;
 }
 
@@ -116,10 +121,9 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #ff9966
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
 }
 
 #btn-cerrar-modal:hover {
-    transform: scale(1.05);
     background-color: #219150;
 }
